@@ -125,11 +125,6 @@ async function utter(message) {
 
     //weather window
     window.open("https://openweathermap.org/city/365137");
-  } else if (message.includes("location")) {
-    const place = speak("what is the location?");
-    loc.push(place);
-    finalText = `the location ${place} is located here.`;
-    speech.text = finalText;
   } else if (message.includes("time")) {
     const time = new Date().toLocaleString(undefined, {
       hour: "numeric",
