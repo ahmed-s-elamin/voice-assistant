@@ -27,8 +27,8 @@ const goodTime = () => {
 };
 
 window.addEventListener("load", () => {
-  // goodTime();
-  // speak("Press the start button to begin talking!");
+  goodTime();
+  speak("Press the start button to begin talking!");
 });
 
 //initilizing speech recognition
