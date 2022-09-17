@@ -99,6 +99,32 @@ async function utter(message) {
     });
     finalText = `Today's date is ${date}`;
     speech.text = finalText;
+  } //weather
+  else if (message.includes("weather")) {
+    async function getWeather(city) {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
+      ).catch((err) => console.error("cannot fetch weather: ", err));
+
+      const data = await response.json();
+
+      const c = data.main.temp;
+      const tempC = c - 273;
+      const finalTemp = tempC.toFixed();
+      return finalTemp;
+    }
+
+    const city = "Omdurman";
+
+    const weather = await getWeather(city);
+
+    //speak(`The weather for today in Omdurman is ${weather} degrees`);
+    finalText = `The Weather for today in ${city} seems to have temprature of  ${weather} degrees`;
+
+    speech.text = finalText;
+
+    //weather window
+    window.open("https://openweathermap.org/city/365137");
   } else if (message.includes("time")) {
     const time = new Date().toLocaleString(undefined, {
       hour: "numeric",
