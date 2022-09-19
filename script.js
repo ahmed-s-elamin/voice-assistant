@@ -1,13 +1,15 @@
 const btn = document.querySelector(".btn");
 const content1 = document.querySelector(".content1");
 const content2 = document.querySelector(".content2");
+// JArvis' replies
+var finalText;
 
 //speaking function
 const speak = (sentance) => {
   const tts = new SpeechSynthesisUtterance(sentance);
 
   tts.rate = 0.9;
-  tts.pitch = 0; // 0 is a deeper voice
+  tts.pitch = 0.2; // 0 = deep voice
 
   window.speechSynthesis.speak(tts);
 };
@@ -40,7 +42,7 @@ recognition.onstart = () => {
   console.log("Recogniton activated.");
 };
 
-recognition.onresult = (event) => {
+recognition.onresult = async (event) => {
   const current = event.resultIndex;
 
   const transcript = event.results[current][0].transcript;
@@ -48,7 +50,7 @@ recognition.onresult = (event) => {
   content1.textContent = "You: " + transcript.replace(",", "");
   utter(transcript.toLowerCase());
   //displaying  jarvis' responses
-  content2.textContent = "Jarvis: " + finalText.replace(".", " ");
+  content2.textContent = "Jarvis: " + finalText;
 };
 
 recognition.onend = () => {
@@ -64,17 +66,25 @@ btn.addEventListener("click", () => {
 async function utter(message) {
   const speech = new SpeechSynthesisUtterance();
   //greeting
-  if (message.includes("hey") || message.includes("hello")) {
-    finalText = "Hello, how can i help you?";
+  if (
+    message.includes("hey") ||
+    message.includes("hi") ||
+    message.includes("hello")
+  ) {
+    finalText = "Hi there, how can i assist you?";
     speech.text = finalText;
   } else if (message.includes("your name")) {
     finalText = "My name is Jarvis. ";
     speech.text = finalText;
   } else if (
     message.includes("how you doing") ||
+    message.includes("how are you") ||
     message.includes("how are you doing")
   ) {
-    finalText = "I am feeling great, how can i help you?";
+    finalText =
+      feeling[Math.floor(Math.random() * feeling.length)] +
+      "" +
+      ". how can i help you";
     speech.text = finalText;
   } else if (message.includes("what day is today")) {
     const weekday = [
@@ -101,40 +111,17 @@ async function utter(message) {
     speech.text = finalText;
   } //weather
   else if (message.includes("weather")) {
-    //getting temperature
-    async function getTemp() {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
-      ).catch((err) => console.error("cannot fetch weather: ", err));
-      const data = await response.json();
-      const c = data.main.temp;
-      const tempC = c - 273;
-      const finalTemp = tempC.toFixed(); // for a nice round number
-      return finalTemp;
-    }
-
-    // weather description
-    async function getDesc() {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
-      ).catch((err) => console.error("cannot fetch weather: ", err));
-
-      const data = await response.json();
-      //console.log(data); //weather data json object
-      const desc = data.weather[0].description; // weather description
-      return desc;
-    }
-
+    const low = await getLow();
+    const hi = await getHi();
     const temp = await getTemp();
     const desc = await getDesc();
 
-    //speak(`The weather for today in Omdurman is ${weather} degrees`);
-    finalText = `The weather currently seems to have a temperature around ${temp} degrees with ${desc} `;
+    finalText = `The weather currently seems to have a temperature of around ${temp} degrees, with highest reaching ${hi} and lowest being ${low} and generally ${desc} `;
 
     speech.text = finalText;
 
     //weather window
-    window.open("https://openweathermap.org/city/365137");
+    // window.open("https://openweathermap.org/city/365137");
   } else if (message.includes("time")) {
     const time = new Date().toLocaleString(undefined, {
       hour: "numeric",
@@ -179,6 +166,12 @@ async function utter(message) {
     todolist.pop(todo);
     finalText = "List updated";
     speech.text = finalText;
+  } else if (message.includes("news")) {
+    const news = await getNews();
+    const url = await newsUrl();
+    finalText = ` in the latest news about tech, ${news}`;
+    speech.text = finalText;
+    window.open(url);
   } else if (message.includes("open twitter")) {
     finalText = "opening Twitter";
     speech.text = finalText;
@@ -196,7 +189,7 @@ async function utter(message) {
       "I don't know that, but here's some results about " +
       message +
       " on Google.";
-    window.open(`https://google.com/search?q=${message}`);
+    // window.open(`https://google.com/search?q=${message}`);
     speech.text = finalText;
   }
   //changing voice
@@ -204,7 +197,7 @@ async function utter(message) {
   speech.voice = voices[0];
   speech.volume = 2;
   speech.rate = 0.9;
-  speech.pitch = 0;
+  speech.pitch = 0.2;
 
   window.speechSynthesis.speak(speech);
 }
@@ -213,14 +206,83 @@ var todolist = ["get a haircut ", "eat pizza"];
 
 var loc = [];
 
-var finalText;
-
 const date = new Date().toLocaleString(undefined, {
   month: "short",
   day: "numeric",
 });
 
+//get news
+async function getNews() {
+  const response = await fetch(
+    `https://newsapi.org/v2/everything?q=technology&apiKey=36b957073a144351bab058c5f3e1ac0b`
+  ).catch((err) => console.error("cannot fetch news at the moment: ", err));
+  const data = await response.json();
+  console.log(data);
+  const articles = data.articles[5].description;
+  return articles;
+}
+
+//get url
+async function newsUrl() {
+  const response = await fetch(
+    `https://newsapi.org/v2/everything?q=technology&apiKey=36b957073a144351bab058c5f3e1ac0b`
+  ).catch((err) => console.error("cannot fetch news at the moment: ", err));
+  const data = await response.json();
+  const url = data.articles[5].url;
+  return url;
+}
+
 //must run once before the voice actually change
 window.onload = function () {
   speak("  ");
 };
+
+const feeling = ["i'm feeling great", "Feeling good", "feeling awesome"];
+
+//getting temperature
+async function getTemp() {
+  const response = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
+  ).catch((err) => console.error("cannot fetch weather: ", err));
+  const data = await response.json(); //data in a json object
+  const c = data.main.temp;
+  const tempC = c - 273;
+  const finalTemp = tempC.toFixed(); // for a nice round number
+  return finalTemp;
+}
+
+//lowest temp
+async function getLow() {
+  const response = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
+  ).catch((err) => console.error("cannot fetch weather: ", err));
+  const data = await response.json();
+  const c = data.main.temp_min;
+  const tempC = c - 273;
+  const minTemp = tempC.toFixed(); // for a nice round number
+  return minTemp;
+}
+
+//highest temp
+async function getHi() {
+  const response = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
+  ).catch((err) => console.error("cannot fetch weather: ", err));
+  const data = await response.json();
+  const c = data.main.temp_max;
+  const tempC = c - 273;
+  const maxTemp = tempC.toFixed(); // for a nice round number
+  return maxTemp;
+}
+
+// weather description
+async function getDesc() {
+  const response = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
+  ).catch((err) => console.error("cannot fetch weather: ", err));
+
+  const data = await response.json();
+  //console.log(data); //weather data json object
+  const desc = data.weather[0].description; // weather description
+  return desc;
+}
