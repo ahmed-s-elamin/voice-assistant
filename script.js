@@ -7,7 +7,7 @@ const speak = (sentance) => {
   const tts = new SpeechSynthesisUtterance(sentance);
 
   tts.rate = 0.9;
-  tts.pitch = 0.5;
+  tts.pitch = 0; // 0 is a deeper voice
 
   window.speechSynthesis.speak(tts);
 };
@@ -27,8 +27,8 @@ const goodTime = () => {
 };
 
 window.addEventListener("load", () => {
-  goodTime();
-  speak("Press the start button to begin talking!");
+  //goodTime();
+  //speak("Press the start button to begin talking!");
 });
 
 //initilizing speech recognition
@@ -101,30 +101,40 @@ async function utter(message) {
     speech.text = finalText;
   } //weather
   else if (message.includes("weather")) {
-    async function getWeather(city) {
+    //getting temperature
+    async function getTemp() {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
+      ).catch((err) => console.error("cannot fetch weather: ", err));
+      const data = await response.json();
+      const c = data.main.temp;
+      const tempC = c - 273;
+      const finalTemp = tempC.toFixed(); // for a nice round number
+      return finalTemp;
+    }
+
+    // weather description
+    async function getDesc() {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
       ).catch((err) => console.error("cannot fetch weather: ", err));
 
       const data = await response.json();
-
-      const c = data.main.temp;
-      const tempC = c - 273;
-      const finalTemp = tempC.toFixed();
-      return finalTemp;
+      //console.log(data); //weather data json object
+      const desc = data.weather[0].description; // weather description
+      return desc;
     }
 
-    const city = "Omdurman";
-
-    const weather = await getWeather(city);
+    const temp = await getTemp();
+    const desc = await getDesc();
 
     //speak(`The weather for today in Omdurman is ${weather} degrees`);
-    finalText = `The Weather for today in ${city} seems to have temprature of  ${weather} degrees`;
+    finalText = `The weather currently seems to have a temperature around ${temp} degrees with ${desc} `;
 
     speech.text = finalText;
 
     //weather window
-    window.open("https://openweathermap.org/city/365137");
+    //window.open("https://openweathermap.org/city/365137");
   } else if (message.includes("time")) {
     const time = new Date().toLocaleString(undefined, {
       hour: "numeric",
@@ -191,10 +201,10 @@ async function utter(message) {
   }
   //changing voice
   const voices = speechSynthesis.getVoices();
-  speech.voice = voices[1];
+  speech.voice = voices[0];
   speech.volume = 2;
   speech.rate = 0.9;
-  speech.pitch = 1;
+  speech.pitch = 0;
 
   window.speechSynthesis.speak(speech);
 }
@@ -210,7 +220,7 @@ const date = new Date().toLocaleString(undefined, {
   day: "numeric",
 });
 
-//must run once before the voice changes so yeah had to be done :3
+//must run once before the voice actually change
 window.onload = function () {
   speak("  ");
 };
