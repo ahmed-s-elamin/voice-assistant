@@ -166,12 +166,15 @@ async function utter(message) {
     todolist.pop(todo);
     finalText = "List updated";
     speech.text = finalText;
-  } else if (message.includes("news")) {
-    const news = await getNews();
-    const url = await newsUrl();
-    finalText = ` in the latest news about tech, ${news}`;
+  } else if (message.includes("tech news")) {
+    const news = await techNews();
+    const url = await techurl();
+    finalText = ` in the latest news about tech, ${news}.`;
     speech.text = finalText;
-    window.open(url);
+  } else if (message.includes("latest news")) {
+    const news = await bbcNews();
+    finalText = ` In today's latest news, ${news}, source: BBC news`;
+    speech.text = finalText;
   } else if (message.includes("open twitter")) {
     finalText = "opening Twitter";
     speech.text = finalText;
@@ -212,24 +215,30 @@ const date = new Date().toLocaleString(undefined, {
 });
 
 //get news
-async function getNews() {
+async function techNews() {
   const response = await fetch(
     `https://newsapi.org/v2/everything?q=technology&apiKey=36b957073a144351bab058c5f3e1ac0b`
   ).catch((err) => console.error("cannot fetch news at the moment: ", err));
   const data = await response.json();
   console.log(data);
-  const articles = data.articles[5].description;
-  return articles;
+  const article1 = data.articles[0].title;
+  const article2 = data.articles[1].title;
+  const articles = [article2, article1];
+  return articles.join(", and in other news, ");
 }
 
-//get url
-async function newsUrl() {
+//fetching latest news from BBC
+async function bbcNews() {
   const response = await fetch(
-    `https://newsapi.org/v2/everything?q=technology&apiKey=36b957073a144351bab058c5f3e1ac0b`
-  ).catch((err) => console.error("cannot fetch news at the moment: ", err));
+    `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=36b957073a144351bab058c5f3e1ac0b`
+  ).catch((err) => console.error(err));
+
   const data = await response.json();
-  const url = data.articles[5].url;
-  return url;
+  console.log(data);
+  const article1 = data.articles[0].title;
+  const article2 = data.articles[2].title;
+  const articles = [article1, article2];
+  return articles.join(", and also, ");
 }
 
 //must run once before the voice actually change
