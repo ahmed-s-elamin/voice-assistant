@@ -134,7 +134,7 @@ async function utter(message) {
     speech.text = finalText;
 
     //weather window
-    //window.open("https://openweathermap.org/city/365137");
+    window.open("https://openweathermap.org/city/365137");
   } else if (message.includes("time")) {
     const time = new Date().toLocaleString(undefined, {
       hour: "numeric",
