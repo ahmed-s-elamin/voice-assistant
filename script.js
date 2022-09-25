@@ -71,10 +71,26 @@ async function utter(message) {
     message.includes("hi") ||
     message.includes("hello")
   ) {
-    finalText = "Hi there, how can i assist you?";
+    finalText = "Hello there, we haven't properly met, what's your name?";
     speech.text = finalText;
-  } else if (message.includes("your name")) {
-    finalText = "My name is Jarvis. ";
+    /*  var name = prompt("");
+    nameList.push(name);
+    finalText = `Nice to meet you ${name}.`; */
+  } // telling jarvis your name
+  else if (message.includes("my name is")) {
+    const name = message.replace("my name is", " ");
+    nameList.push(name);
+    finalText = `Nice meeting you ${nameList}.`;
+    speech.text = finalText;
+  } else if (
+    message.includes("what's my name") ||
+    message.includes("what is my name")
+  ) {
+    if (nameList.length === 0) {
+      finalText = "Excuze me but i have no clue what your name is";
+    } else {
+      finalText = `Your name is ${nameList} as you just told me.`;
+    }
     speech.text = finalText;
   } else if (
     message.includes("how you doing") ||
@@ -86,7 +102,8 @@ async function utter(message) {
       "" +
       ". how can i help you";
     speech.text = finalText;
-  } else if (message.includes("what day is today")) {
+  } //day query
+  else if (message.includes("what day is today")) {
     const weekday = [
       "Sunday",
       "Monday",
@@ -102,7 +119,8 @@ async function utter(message) {
 
     finalText = `Today is ${day}, ${date}`;
     speech.text = finalText;
-  } else if (message.includes("date")) {
+  } //date
+  else if (message.includes("date")) {
     const date = new Date().toLocaleString(undefined, {
       month: "short",
       day: "numeric",
@@ -121,15 +139,17 @@ async function utter(message) {
     speech.text = finalText;
 
     //weather window
-    // window.open("https://openweathermap.org/city/365137");
-  } else if (message.includes("time")) {
+    window.open("https://openweathermap.org/city/365137");
+  } //time
+  else if (message.includes("time")) {
     const time = new Date().toLocaleString(undefined, {
       hour: "numeric",
       minute: "numeric",
     });
     finalText = `It's currently ${time}`;
     speech.text = finalText;
-  } else if (
+  } //adding item to list
+  else if (
     message.includes("add to the list") ||
     message.includes("add to list") ||
     message.includes("add item") ||
@@ -142,10 +162,11 @@ async function utter(message) {
   ) {
     speak("what would you like to add?");
     var todo = prompt("");
-    todolist.push(todo);
+    todolist.push(todo); //pushing the item into array
     finalText = `the item ${todo} was added to the list.`;
     speech.text = finalText;
-  } else if (
+  } //showing list
+  else if (
     message.includes("show to do") ||
     message.includes("showlist") ||
     message.includes("show list") ||
@@ -157,7 +178,8 @@ async function utter(message) {
   ) {
     finalText = "Your list contains " + todolist.join("  and  ");
     speech.text = finalText;
-  } else if (
+  } //removing item
+  else if (
     message.includes("remove from the list") ||
     message.includes("remove item") ||
     message.includes("delete item") ||
@@ -166,30 +188,35 @@ async function utter(message) {
     todolist.pop(todo);
     finalText = "List updated";
     speech.text = finalText;
-  } else if (message.includes("tech news")) {
+  } //getting news about tech
+  else if (message.includes("tech news")) {
     const news = await techNews();
-    const url = await techurl();
     finalText = ` in the latest news about tech, ${news}.`;
     speech.text = finalText;
-  } else if (message.includes("latest news")) {
+  } //getting latest articles from bbc
+  else if (message.includes("latest news")) {
     const news = await bbcNews();
     finalText = ` In today's latest news, ${news}, source: BBC news`;
     speech.text = finalText;
-  } else if (message.includes("open twitter")) {
+  }
+  //openning twitter
+  else if (message.includes("open twitter")) {
     finalText = "opening Twitter";
     speech.text = finalText;
     window.open("https://twitter.com/home");
-  } else if (message.includes("open youtube")) {
+  } //opnening youtube
+  else if (message.includes("open youtube")) {
     finalText = "opening Youtube";
     speech.text = finalText;
     window.open("https://youtube.com");
-  } else if (message.includes("open instagram")) {
+  } //opening instagram
+  else if (message.includes("open instagram")) {
     finalText = "opening Instagram";
     speech.text = finalText;
     window.open("https://instagram.com");
   } else {
     finalText =
-      "I don't know that, but here's some results about " +
+      "I don't know that, but here's some results i found about" +
       message +
       " on Google.";
     // window.open(`https://google.com/search?q=${message}`);
@@ -205,16 +232,19 @@ async function utter(message) {
   window.speechSynthesis.speak(speech);
 }
 
+//name array
+const nameList = [];
+
+//list array
 var todolist = ["get a haircut ", "eat pizza"];
 
-var loc = [];
-
+//date function
 const date = new Date().toLocaleString(undefined, {
   month: "short",
   day: "numeric",
 });
 
-//get news
+//get tech news
 async function techNews() {
   const response = await fetch(
     `https://newsapi.org/v2/everything?q=technology&apiKey=36b957073a144351bab058c5f3e1ac0b`
