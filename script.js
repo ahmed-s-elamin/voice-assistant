@@ -124,7 +124,26 @@ async function utter(message) {
     });
     finalText = `Today's date is ${date}`;
     speech.text = finalText;
-  } //weather
+  }
+  //google search
+  else if (
+    message.includes("what is") ||
+    message.includes("what are") ||
+    message.includes("who is") ||
+    message.includes("who are")
+  ) {
+    finalText = `Here's what i found on Google about ${message}`;
+    speech.text = finalText;
+    window.open(`https://google.com/search?q=${message}`);
+  } //locating on the map
+  else if (message.includes("where is")) {
+    const location = message.replace("where is", " ");
+
+    finalText = `Here's the location of ${location} on the map`;
+    speech.text = finalText;
+    window.open(`https://www.google.com/maps/place/${location}/`);
+  }
+  //weather
   else if (message.includes("weather")) {
     const low = await getLow();
     const hi = await getHi();
@@ -191,7 +210,11 @@ async function utter(message) {
     finalText = ` in the latest news about tech, ${news}.`;
     speech.text = finalText;
   } //getting latest articles from bbc
-  else if (message.includes("latest news")) {
+  else if (
+    message.includes("latest news") ||
+    message.includes("read me the news") ||
+    message.includes("read the news")
+  ) {
     const news = await bbcNews();
     finalText = ` In today's latest news, ${news}, source: BBC news`;
     speech.text = finalText;
@@ -242,19 +265,6 @@ const date = new Date().toLocaleString(undefined, {
   month: "short",
   day: "numeric",
 });
-
-//get tech news
-async function techNews() {
-  const response = await fetch(
-    `https://newsapi.org/v2/everything?q=technology&apiKey=36b957073a144351bab058c5f3e1ac0b`
-  ).catch((err) => console.error("cannot fetch news at the moment: ", err));
-  const data = await response.json();
-  console.log(data);
-  const article1 = data.articles[0].title;
-  const article2 = data.articles[1].title;
-  const articles = [article2, article1];
-  return articles.join(", and in other news, ");
-}
 
 //fetching latest news from BBC
 async function bbcNews() {
