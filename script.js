@@ -216,7 +216,7 @@ async function utter(message) {
       idk[Math.floor(Math.random() * idk.length)] +
       "but here's a Google search about " +
       message;
-    // window.open(`https://google.com/search?q=${message}`);
+    window.open(`https://google.com/search?q=${message}`);
     speech.text = finalText;
   }
   //changing voice
