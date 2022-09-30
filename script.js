@@ -29,8 +29,8 @@ const goodTime = () => {
 };
 
 window.addEventListener("load", () => {
-  //goodTime();
-  //speak("Press the start button to begin talking!");
+  goodTime();
+  speak("Press the start button to begin talking!");
 });
 
 //initilizing speech recognition
@@ -73,14 +73,11 @@ async function utter(message) {
   ) {
     finalText = "Hello there, we haven't properly met, what's your name?";
     speech.text = finalText;
-    /*  var name = prompt("");
-    nameList.push(name);
-    finalText = `Nice to meet you ${name}.`; */
   } // telling jarvis your name
   else if (message.includes("my name is")) {
     const name = message.replace("my name is", " ");
     nameList.push(name);
-    finalText = `Nice meeting you ${nameList}.`;
+    finalText = `Nice meeting you, ${nameList}.`;
     speech.text = finalText;
   } else if (
     message.includes("what's my name") ||
@@ -216,9 +213,9 @@ async function utter(message) {
     window.open("https://instagram.com");
   } else {
     finalText =
-      "I don't know that, but here's some results i found about" +
-      message +
-      " on Google.";
+      idk[Math.floor(Math.random() * idk.length)] +
+      "but here's a Google search about " +
+      message;
     // window.open(`https://google.com/search?q=${message}`);
     speech.text = finalText;
   }
@@ -226,11 +223,13 @@ async function utter(message) {
   const voices = speechSynthesis.getVoices();
   speech.voice = voices[0];
   speech.volume = 2;
-  speech.rate = 0.9;
+  speech.rate = 0.8;
   speech.pitch = 0.2;
 
   window.speechSynthesis.speak(speech);
 }
+//error messages
+const idk = ["I don't think i know that, ", "Sorry i have no clue, "];
 
 //name array
 const nameList = [];
