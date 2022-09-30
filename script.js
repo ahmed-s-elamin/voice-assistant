@@ -73,7 +73,13 @@ async function utter(message) {
   ) {
     finalText = "Hello there, we haven't properly met, what's your name?";
     speech.text = finalText;
-  } // telling jarvis your name
+  } //features
+  else if (message.includes("what can you do")) {
+    finalText =
+      "I can do various tasks such as : telling date and time, search google, tell the weather, read the news, show locations on the map and open social media!. ";
+    speech.text = finalText;
+  }
+  // telling jarvis your name
   else if (message.includes("my name is")) {
     const name = message.replace("my name is", " ");
     nameList.push(name);
@@ -203,11 +209,6 @@ async function utter(message) {
   ) {
     todolist.pop(todo);
     finalText = "List updated";
-    speech.text = finalText;
-  } //getting news about tech
-  else if (message.includes("tech news")) {
-    const news = await techNews();
-    finalText = ` in the latest news about tech, ${news}.`;
     speech.text = finalText;
   } //getting latest articles from bbc
   else if (
