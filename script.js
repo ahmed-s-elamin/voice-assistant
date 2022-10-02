@@ -1,6 +1,20 @@
 const btn = document.querySelector(".btn");
 const content1 = document.querySelector(".content1");
 const content2 = document.querySelector(".content2");
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function () {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
 // JArvis' replies
 var finalText;
 
@@ -30,7 +44,7 @@ const goodTime = () => {
 
 window.addEventListener("load", () => {
   goodTime();
-  speak("Press the start button to begin talking!");
+  speak("Press the start button and try asking for what can you do.");
 });
 
 //initilizing speech recognition
@@ -76,7 +90,7 @@ async function utter(message) {
   } //features
   else if (message.includes("what can you do")) {
     finalText =
-      "I can do various tasks such as : telling date and time, search google, tell the weather, read the news, show locations on the map and open social media!. ";
+      "Check the list in the upper page to see the tokens i use to match with my knowledge. If i couldn't recognize what you said, i'll give you a google search.";
     speech.text = finalText;
   }
   // telling jarvis your name
