@@ -44,7 +44,7 @@ const goodTime = () => {
 
 window.addEventListener("load", () => {
   goodTime();
-  speak("Press the start button and try asking for what can you do.");
+  speak("How can i help you.");
 });
 
 //initilizing speech recognition
@@ -203,7 +203,8 @@ async function utter(message) {
     speech.text = finalText;
   } //showing list
   else if (
-    message.includes("show to do") ||
+    message.includes("what's on my list") ||
+    message.includes("what is on my list") ||
     message.includes("showlist") ||
     message.includes("show list") ||
     message.includes("show my list") ||
@@ -233,6 +234,20 @@ async function utter(message) {
     const news = await bbcNews();
     finalText = ` In today's latest news, ${news}, source: BBC news`;
     speech.text = finalText;
+  } //opning camera
+  else if (
+    message.includes("open camera") ||
+    message.includes("can you see me") ||
+    message.includes("am i cute") ||
+    message.includes("show my face")
+  ) {
+    window.open(
+      "http://127.0.0.1:5500/camera.html",
+      "",
+      "width=750px,height=550px,left=300px,top=100px"
+    );
+    finalText = "Openning camera";
+    speech.text = finalText;
   }
   //openning twitter
   else if (message.includes("open twitter")) {
@@ -250,10 +265,7 @@ async function utter(message) {
     speech.text = finalText;
     window.open("https://instagram.com");
   } else {
-    finalText =
-      idk[Math.floor(Math.random() * idk.length)] +
-      "but here's a Google search about " +
-      message;
+    finalText = "Here's what i found about " + message;
     window.open(`https://google.com/search?q=${message}`);
     speech.text = finalText;
   }
