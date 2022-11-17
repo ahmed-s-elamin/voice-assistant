@@ -1,10 +1,10 @@
 const btn = document.querySelector(".btn");
 const content1 = document.querySelector(".content1");
 const content2 = document.querySelector(".content2");
-var coll = document.getElementsByClassName("collapsible");
-var i;
+const coll = document.getElementsByClassName("collapsible");
 
-for (i = 0; i < coll.length; i++) {
+//Tokens window
+for (let i = 0; i < coll.length; i++) {
   coll[i].addEventListener("click", function () {
     this.classList.toggle("active");
     var content = this.nextElementSibling;
@@ -15,15 +15,22 @@ for (i = 0; i < coll.length; i++) {
     }
   });
 }
+
 // JArvis' replies
 var finalText;
+
+//must run once before the voice actually change
+window.onload = function () {
+  speak("  ");
+};
 
 //speaking function
 const speak = (sentance) => {
   const tts = new SpeechSynthesisUtterance(sentance);
-
-  tts.rate = 0.9;
-  tts.pitch = 0.2; // 0 = deep voice
+  const voices = speechSynthesis.getVoices();
+  tts.voice = voices[1]; //changing the voice
+  tts.rate = 1;
+  tts.pitch = 1; // 0 = deep voice
 
   window.speechSynthesis.speak(tts);
 };
@@ -43,26 +50,30 @@ const goodTime = () => {
 };
 
 window.addEventListener("load", () => {
-  goodTime();
-  speak("How can i help you.");
+  setTimeout(() => {
+    goodTime();
+    speak("We haven't met yet, i am Jarvis. What is your name?");
+  }, 100);
 });
 
 //initilizing speech recognition
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
+const sr = new SpeechRecognition();
 
 recognition.onstart = () => {
   console.log("Recogniton activated.");
 };
 
+//console results
 recognition.onresult = async (event) => {
   const current = event.resultIndex;
 
   const transcript = event.results[current][0].transcript;
   //displaying user's command
   content1.textContent = "You: " + transcript.replace(",", "");
-  utter(transcript.toLowerCase());
+  tts(transcript.toLowerCase());
   //displaying  jarvis' responses
   content2.textContent = "Jarvis: " + finalText;
 };
@@ -76,8 +87,8 @@ btn.addEventListener("click", () => {
   recognition.start();
 });
 
-//speech synthesis function
-async function utter(message) {
+//Jarvis responses (text to speech)
+async function tts(message) {
   const speech = new SpeechSynthesisUtterance();
   //greeting
   if (
@@ -85,8 +96,13 @@ async function utter(message) {
     message.includes("hi") ||
     message.includes("hello")
   ) {
-    finalText = "Hello there, we haven't properly met, what's your name?";
+    if (nameList.length === 0) {
+      finalText = "Hello stranger.";
+    } else {
+      finalText = `Hey, ${nameList} how may i help?`;
+    }
     speech.text = finalText;
+    sr.start();
   } //features
   else if (message.includes("what can you do")) {
     finalText =
@@ -97,16 +113,17 @@ async function utter(message) {
   else if (message.includes("my name is")) {
     const name = message.replace("my name is", " ");
     nameList.push(name);
-    finalText = `Nice meeting you, ${nameList}.`;
+    finalText = `Nice meeting you, ${nameList}`;
     speech.text = finalText;
   } else if (
     message.includes("what's my name") ||
+    message.includes("you don't know my name.") ||
     message.includes("what is my name")
   ) {
     if (nameList.length === 0) {
-      finalText = "Excuze me but i have no clue what your name is";
+      finalText = "Sorry bro, you didn't tell me.";
     } else {
-      finalText = `Your name is ${nameList} as you just told me.`;
+      finalText = `Your name is ${nameList} you just told me bro`;
     }
     speech.text = finalText;
   } else if (
@@ -157,11 +174,14 @@ async function utter(message) {
     window.open(`https://google.com/search?q=${message}`);
   } //locating on the map
   else if (message.includes("where is")) {
-    const location = message.replace("where is", " ");
+    const place = message.replace("where is", " ");
 
-    finalText = `Here's the location of ${location} on the map`;
+    finalText = `Let me open up google maps, her's the location of ${place}`;
     speech.text = finalText;
-    window.open(`https://www.google.com/maps/place/${location}/`);
+    setTimeout(
+      window.open(`https://www.google.com/maps/place/${place}/`),
+      2000
+    );
   }
   //weather
   else if (message.includes("weather")) {
@@ -271,9 +291,9 @@ async function utter(message) {
   }
   //changing voice
   const voices = speechSynthesis.getVoices();
-  speech.voice = voices[0];
+  speech.voice = voices[1];
   speech.volume = 2;
-  speech.rate = 0.8;
+  speech.rate = 0.9;
   speech.pitch = 0.2;
 
   window.speechSynthesis.speak(speech);
@@ -295,15 +315,14 @@ const date = new Date().toLocaleString(undefined, {
 
 //fetching latest news from BBC
 async function bbcNews() {
-  const response = await fetch(
-    `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=36b957073a144351bab058c5f3e1ac0b`
-  ).catch((err) => console.error(err));
+  let api = `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=36b957073a144351bab058c5f3e1ac0b`;
+  const response = await fetch(api).catch((err) => console.error(err));
 
   const data = await response.json();
   console.log(data);
   const article1 = data.articles[0].title;
   const article2 = data.articles[2].title;
-  const articles = [article1, article2];
+  const articles = [article1, article2]; //opted for 2 articles only
   return articles.join(", and also, ");
 }
 
@@ -361,3 +380,5 @@ async function getDesc() {
   const desc = data.weather[0].description; // weather description
   return desc;
 }
+
+const helpu = `how can i help you, ${namelist}`;
