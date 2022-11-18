@@ -243,12 +243,23 @@ async function tts(message) {
     } else if (item === "dinner") {
       mylist.splice(1, 1);
       finalText = `${item} was removed from the list.`;
+    } else if (index === -1) {
+      finalText = "There's no such item on your list.";
     } else {
       mylist.pop();
       finalText = `${item} was removed from the list.`;
     }
     speech.text = finalText;
-  } //getting latest articles from bbc
+  } else if (
+    message.includes("clear my list") ||
+    message.includes("clear list") ||
+    message.includes("clear item list")
+  ) {
+    mylist = [];
+    finalText = "Your list has been cleared.";
+    speech.text = finalText;
+  }
+  //getting latest articles from bbc
   else if (
     message.includes("latest news") ||
     message.includes("read me the news") ||
