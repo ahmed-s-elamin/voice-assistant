@@ -1,9 +1,10 @@
+//selsecting the HTML ITEMS
 const btn = document.querySelector(".btn");
 const content1 = document.querySelector(".content1");
 const content2 = document.querySelector(".content2");
 const coll = document.getElementsByClassName("collapsible");
 
-//Tokens window
+//Collabsible menu
 for (let i = 0; i < coll.length; i++) {
   coll[i].addEventListener("click", function () {
     this.classList.toggle("active");
@@ -16,7 +17,7 @@ for (let i = 0; i < coll.length; i++) {
   });
 }
 
-// JArvis' replies
+// JArvis' responses
 var finalText;
 
 //must run once before the voice actually change
@@ -52,8 +53,8 @@ const goodTime = () => {
 window.addEventListener("load", () => {
   setTimeout(() => {
     goodTime();
-    speak("We haven't met yet, i am Jarvis. What is your name?");
-  }, 100);
+    // speak("We haven't met yet, i am Jarvis. What is your name?");
+  }, 200);
 });
 
 //initilizing speech recognition
@@ -62,11 +63,11 @@ const SpeechRecognition =
 const recognition = new SpeechRecognition();
 const sr = new SpeechRecognition();
 
+//console results
 recognition.onstart = () => {
   console.log("Recogniton activated.");
 };
 
-//console results
 recognition.onresult = async (event) => {
   const current = event.resultIndex;
 
@@ -96,13 +97,12 @@ async function tts(message) {
     message.includes("hi") ||
     message.includes("hello")
   ) {
-    if (nameList.length === 0) {
+    if (myName.length === 0) {
       finalText = "Hello stranger.";
     } else {
-      finalText = `Hey, ${nameList} how may i help?`;
+      finalText = `Hey, ${myName} how may i help?`;
     }
     speech.text = finalText;
-    sr.start();
   } //features
   else if (message.includes("what can you do")) {
     finalText =
@@ -112,18 +112,18 @@ async function tts(message) {
   // telling jarvis your name
   else if (message.includes("my name is")) {
     const name = message.replace("my name is", " ");
-    nameList.push(name);
-    finalText = `Nice meeting you, ${nameList}`;
+    myName.push(name);
+    finalText = `Nice meeting you, ${myName}`;
     speech.text = finalText;
   } else if (
     message.includes("what's my name") ||
     message.includes("you don't know my name.") ||
     message.includes("what is my name")
   ) {
-    if (nameList.length === 0) {
+    if (myName.length === 0) {
       finalText = "Sorry bro, you didn't tell me.";
     } else {
-      finalText = `Your name is ${nameList} you just told me bro`;
+      finalText = `Your name is ${myName} you just told me bro`;
     }
     speech.text = finalText;
   } else if (
@@ -190,12 +190,12 @@ async function tts(message) {
     const temp = await getTemp();
     const desc = await getDesc();
 
-    finalText = `The weather currently seems to have a temperature of around ${temp} degrees, with highest reaching ${hi} and lowest being ${low} and generally ${desc} `;
+    finalText = `Right now it is ${desc}, with temprature of ${temp} degrees. The forecast shows a high of ${hi} and low of ${low} `;
 
     speech.text = finalText;
 
     //weather window
-    window.open("https://openweathermap.org/city/365137");
+    //window.open("https://openweathermap.org/city/365137");
   } //time
   else if (message.includes("time")) {
     const time = new Date().toLocaleString(undefined, {
@@ -205,21 +205,11 @@ async function tts(message) {
     finalText = `It's currently ${time}`;
     speech.text = finalText;
   } //adding item to list
-  else if (
-    message.includes("add to the list") ||
-    message.includes("add to list") ||
-    message.includes("add item") ||
-    message.includes("add to do") ||
-    message.includes("add to-do") ||
-    message.includes("add to my list") ||
-    message.includes("new item") ||
-    message.includes("add item") ||
-    message.includes("new task")
-  ) {
-    speak("what would you like to add?");
-    var todo = prompt("");
-    todolist.push(todo); //pushing the item into array
-    finalText = `the item ${todo} was added to the list.`;
+  else if (message.includes("add")) {
+    const thing = message.replace("add", " ");
+    const item = thing.replace(".", ""); // created this to remove the annoying "." at the end
+    mylist.push(item); //pushing the item into array
+    finalText = `Alright, the item ${item} was added to the list.`;
     speech.text = finalText;
   } //showing list
   else if (
@@ -233,17 +223,30 @@ async function tts(message) {
     message.includes("show the new list") ||
     message.includes("show me the list")
   ) {
-    finalText = "Your list contains " + todolist.join("  and  ");
+    //checking if the list is empty
+    if (mylist.length === 0) {
+      finalText = "Your list is empty at the moment.";
+    } else {
+      finalText = "Your list contains  " + mylist.join("  and  ");
+    }
     speech.text = finalText;
-  } //removing item
-  else if (
-    message.includes("remove from the list") ||
-    message.includes("remove item") ||
-    message.includes("delete item") ||
-    message.includes("remove task")
-  ) {
-    todolist.pop(todo);
-    finalText = "List updated";
+  } //removing item off the list
+  else if (message.includes("remove")) {
+    var thing = message.replace("remove ", "");
+    var item = thing.replace(".", "");
+    var index = mylist.indexOf(item);
+
+    //checking if item exists
+    if (item === "shopping") {
+      mylist.shift();
+      finalText = `${item} was removed from the list.`;
+    } else if (item === "dinner") {
+      mylist.splice(1, 1);
+      finalText = `${item} was removed from the list.`;
+    } else {
+      mylist.pop();
+      finalText = `${item} was removed from the list.`;
+    }
     speech.text = finalText;
   } //getting latest articles from bbc
   else if (
@@ -302,10 +305,10 @@ async function tts(message) {
 const idk = ["I don't think i know that, ", "Sorry i have no clue, "];
 
 //name array
-const nameList = [];
+const myName = [];
 
 //list array
-var todolist = ["get a haircut ", "eat pizza"];
+var mylist = ["shopping ", "dinner "];
 
 //date function
 const date = new Date().toLocaleString(undefined, {
@@ -381,4 +384,4 @@ async function getDesc() {
   return desc;
 }
 
-const helpu = `how can i help you, ${namelist}`;
+const helpu = `how can i help you, ${myName}`;
