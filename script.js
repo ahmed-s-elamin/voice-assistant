@@ -61,14 +61,13 @@ window.addEventListener("load", () => {
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
-const sr = new SpeechRecognition();
 
 //console results
 recognition.onstart = () => {
   console.log("Recogniton activated.");
 };
 
-recognition.onresult = async (event) => {
+recognition.onresult = (event) => {
   const current = event.resultIndex;
 
   const transcript = event.results[current][0].transcript;
@@ -209,7 +208,7 @@ async function tts(message) {
     const thing = message.replace("add", " ");
     const item = thing.replace(".", ""); // created this to remove the annoying "." at the end
     mylist.push(item); //pushing the item into array
-    finalText = `Alright, the item ${item} was added to the list.`;
+    finalText = `Okay..the item ${item} was added to the list.`;
     speech.text = finalText;
   } //showing list
   else if (
@@ -225,7 +224,7 @@ async function tts(message) {
   ) {
     //checking if the list is empty
     if (mylist.length === 0) {
-      finalText = "Your list is empty at the moment.";
+      finalText = "Sorry, your list is empty at the moment.";
     } else {
       finalText = "Your list contains  " + mylist.join("  and  ");
     }
@@ -239,15 +238,15 @@ async function tts(message) {
     //checking if item exists
     if (item === "shopping") {
       mylist.shift();
-      finalText = `${item} was removed from the list.`;
+      finalText = `${item} was removed from your list.`;
     } else if (item === "dinner") {
       mylist.splice(1, 1);
-      finalText = `${item} was removed from the list.`;
+      finalText = `${item} was removed from your list.`;
     } else if (index === -1) {
       finalText = "There's no such item on your list.";
     } else {
       mylist.pop();
-      finalText = `${item} was removed from the list.`;
+      finalText = `${item} was removed from your list.`;
     }
     speech.text = finalText;
   } else if (
@@ -266,21 +265,8 @@ async function tts(message) {
     message.includes("read the news")
   ) {
     const news = await bbcNews();
-    finalText = ` In today's latest news, ${news}, source: BBC news`;
-    speech.text = finalText;
-  } //opning camera
-  else if (
-    message.includes("open camera") ||
-    message.includes("can you see me") ||
-    message.includes("am i cute") ||
-    message.includes("show my face")
-  ) {
-    window.open(
-      "http://127.0.0.1:5500/camera.html",
-      "",
-      "width=750px,height=550px,left=300px,top=100px"
-    );
-    finalText = "Openning camera";
+
+    finalText = ` In today's Top stories, ${news}, source: BBC news.`;
     speech.text = finalText;
   }
   //openning twitter
@@ -326,11 +312,13 @@ const date = new Date().toLocaleString(undefined, {
   month: "short",
   day: "numeric",
 });
+var newsApi = `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=36b957073a144351bab058c5f3e1ac0b`;
 
 //fetching latest news from BBC
 async function bbcNews() {
-  let api = `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=36b957073a144351bab058c5f3e1ac0b`;
-  const response = await fetch(api).catch((err) => console.error(err));
+  const response = await fetch(newsApi).catch((err) =>
+    console.error("Cannot fetch: ", err)
+  );
 
   const data = await response.json();
   console.log(data);
@@ -347,11 +335,13 @@ window.onload = function () {
 
 const feeling = ["i'm feeling great", "Feeling good", "feeling awesome"];
 
+var weatherApi = `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`;
+
 //getting temperature
 async function getTemp() {
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
-  ).catch((err) => console.error("cannot fetch weather: ", err));
+  const response = await fetch(weatherApi).catch((err) =>
+    console.error("cannot fetch: ", err)
+  );
   const data = await response.json(); //data in a json object
   const c = data.main.temp;
   const tempC = c - 273;
@@ -361,9 +351,9 @@ async function getTemp() {
 
 //lowest temp
 async function getLow() {
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
-  ).catch((err) => console.error("cannot fetch weather: ", err));
+  const response = await fetch(weatherApi).catch((err) =>
+    console.error("cannot fetch: ", err)
+  );
   const data = await response.json();
   const c = data.main.temp_min;
   const tempC = c - 273;
@@ -373,9 +363,9 @@ async function getLow() {
 
 //highest temp
 async function getHi() {
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
-  ).catch((err) => console.error("cannot fetch weather: ", err));
+  const response = await fetch(weatherApi).catch((err) =>
+    console.error("cannot fetch: ", err)
+  );
   const data = await response.json();
   const c = data.main.temp_max;
   const tempC = c - 273;
@@ -385,12 +375,11 @@ async function getHi() {
 
 // weather description
 async function getDesc() {
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`
-  ).catch((err) => console.error("cannot fetch weather: ", err));
+  const response = await fetch(weatherApi).catch((err) =>
+    console.error("cannot fetch: ", err)
+  );
 
   const data = await response.json();
-  //console.log(data); //weather data json object
   const desc = data.weather[0].description; // weather description
   return desc;
 }
