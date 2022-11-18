@@ -188,9 +188,8 @@ async function tts(message) {
     const hi = await getHi();
     const temp = await getTemp();
     const desc = await getDesc();
-
-    finalText = `Right now it is ${desc}, with temprature of ${temp} degrees. The forecast shows a high of ${hi} and low of ${low} `;
-
+    const response = `Right now it is ${desc}, with temprature of ${temp} degrees. The forecast shows a high of ${hi} and low of ${low} `;
+    finalText = response;
     speech.text = finalText;
 
     window.open("https://openweathermap.org/city/365137");
@@ -216,10 +215,7 @@ async function tts(message) {
     message.includes("showlist") ||
     message.includes("show list") ||
     message.includes("show my list") ||
-    message.includes("show items") ||
-    message.includes("show the list") ||
-    message.includes("show the new list") ||
-    message.includes("show me the list")
+    message.includes("show items")
   ) {
     //checking if the list is empty
     if (mylist.length === 0) {
@@ -248,7 +244,8 @@ async function tts(message) {
       finalText = `${item} was removed from your list.`;
     }
     speech.text = finalText;
-  } else if (
+  } //clearing list
+  else if (
     message.includes("clear my list") ||
     message.includes("clear list") ||
     message.includes("clear item list")
