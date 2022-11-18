@@ -53,7 +53,7 @@ const goodTime = () => {
 window.addEventListener("load", () => {
   setTimeout(() => {
     goodTime();
-    // speak("We haven't met yet, i am Jarvis. What is your name?");
+    speak("We haven't met yet, i am Jarvis. What is your name?");
   }, 200);
 });
 
@@ -175,7 +175,7 @@ async function tts(message) {
   else if (message.includes("where is")) {
     const place = message.replace("where is", " ");
 
-    finalText = `Let me open up google maps, her's the location of ${place}`;
+    finalText = `Here's the location of ${place}`;
     speech.text = finalText;
     setTimeout(
       window.open(`https://www.google.com/maps/place/${place}/`),
@@ -193,8 +193,7 @@ async function tts(message) {
 
     speech.text = finalText;
 
-    //weather window
-    //window.open("https://openweathermap.org/city/365137");
+    window.open("https://openweathermap.org/city/365137");
   } //time
   else if (message.includes("time")) {
     const time = new Date().toLocaleString(undefined, {
