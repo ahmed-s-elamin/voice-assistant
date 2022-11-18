@@ -308,6 +308,7 @@ const date = new Date().toLocaleString(undefined, {
   month: "short",
   day: "numeric",
 });
+
 var newsApi = `https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=36b957073a144351bab058c5f3e1ac0b`;
 
 //fetching latest news from BBC
