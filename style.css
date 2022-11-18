@@ -15,7 +15,8 @@
   border: none;
   text-align: left;
   outline: none;
-  font-size: 15px;
+  font-size: 25px;
+  font-weight: bold;
 }
 
 .active,
@@ -28,7 +29,7 @@
   padding: 0 18px;
   display: none;
   overflow: hidden;
-  background-color: #3f3d3d;
+  background-color: #f1f1f1;
 }
 
 p {
@@ -36,7 +37,7 @@ p {
 }
 
 .app {
-  min-height: 70vh;
+  min-height: 80vh;
   width: 100%;
   position: relative;
 }
