@@ -99,7 +99,7 @@ async function tts(message) {
     if (myName.length === 0) {
       finalText = "Hello stranger.";
     } else {
-      finalText = `Hey, ${myName} how may i help?`;
+      finalText = `Hey, ${myName}, how can i help you?.`;
     }
     speech.text = finalText;
   }
