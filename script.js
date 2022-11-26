@@ -125,10 +125,8 @@ async function tts(message) {
     message.includes("how are you") ||
     message.includes("how are you doing")
   ) {
-    finalText =
-      feeling[Math.floor(Math.random() * feeling.length)] +
-      "" +
-      ". how can i help you";
+    finalText = feeling[Math.floor(Math.random() * feeling.length)];
+
     speech.text = finalText;
   } //day query
   else if (message.includes("what day is today")) {
@@ -201,7 +199,7 @@ async function tts(message) {
     const thing = message.replace("add", " ");
     const item = thing.replace(".", ""); // created this to remove the annoying "." at the end
     mylist.push(item); //pushing the item into array
-    finalText = `Okay..the item ${item} was added to the list.`;
+    finalText = `Okay, the item ${item} was added to the list.`;
     speech.text = finalText;
   } //showing list
   else if (
@@ -214,7 +212,7 @@ async function tts(message) {
   ) {
     //checking if the list is empty
     if (mylist.length === 0) {
-      finalText = "Sorry, your list is empty at the moment.";
+      finalText = "Your list is empty at the moment.";
     } else {
       finalText = "Your list contains  " + mylist.join("  and  ");
     }
@@ -228,20 +226,21 @@ async function tts(message) {
     //checking if item exists
     if (item === "shopping") {
       mylist.shift();
-      finalText = `${item} was removed from your list.`;
+      finalText = `The item ${item} was removed from your list.`;
     } else if (item === "dinner") {
       mylist.splice(1, 1);
-      finalText = `${item} was removed from your list.`;
+      finalText = `The item ${item} was removed from your list.`;
     } else if (index === -1) {
       finalText = "There's no such item on your list.";
     } else {
       mylist.pop();
-      finalText = `${item} was removed from your list.`;
+      finalText = `The item ${item} was removed from your list.`;
     }
     speech.text = finalText;
   } //clearing list
   else if (
     message.includes("clear my list") ||
+    message.includes("clear items") ||
     message.includes("clear list") ||
     message.includes("clear item list")
   ) {
