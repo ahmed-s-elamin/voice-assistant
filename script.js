@@ -267,23 +267,25 @@ async function tts(message) {
   ) {
     const news = await bbcNews();
     const url1 = await GetUrl();
+    const url2 = await GetUrl2();
 
     finalText = ` In today's Top stories, ${news}, source: BBC news.`;
+    window.open(url2);
     window.open(url1);
     speech.text = finalText;
   }
   //openning twitter
   else if (message.includes("open twitter")) {
-    finalText = "opening Twitter";
+    finalText = "opening Twitter.";
     speech.text = finalText;
     window.open("https://twitter.com/home");
   } //opnening youtube
-  else if (message.includes("open youtube")) {
+  else if (message.includes("open youtube.")) {
     finalText = "opening Youtube";
     speech.text = finalText;
     window.open("https://youtube.com");
   } //opening instagram
-  else if (message.includes("open instagram")) {
+  else if (message.includes("open instagram.")) {
     finalText = "opening Instagram";
     speech.text = finalText;
     window.open("https://instagram.com");
@@ -331,18 +333,19 @@ async function bbcNews() {
   const articles = [article1, article2]; //opted for 2 articles only
   return articles.join(", and also, ");
 }
+
 //fetching article url1
 async function GetUrl() {
   const response = await fetch(newsApi).catch((err) =>
     console.error("Cannot fetch: ", err)
   );
   const data = await response.json();
-  const url1 = data.articles[0].url;
+  const url1 = data.articles[0].url; //accessing article 0 url
   return url1;
 }
 
 //fetching article url2
-async function GetUrl() {
+async function GetUrl2() {
   const response = await fetch(newsApi).catch((err) =>
     console.error("Cannot fetch: ", err)
   );
