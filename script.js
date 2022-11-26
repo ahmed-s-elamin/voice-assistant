@@ -143,7 +143,7 @@ async function tts(message) {
     const d = new Date();
     let day = weekday[d.getDay()];
 
-    finalText = `Today is ${day}, ${date}`;
+    finalText = `Today is ${day}, ${date}.`;
     speech.text = finalText;
   } //date
   else if (message.includes("date")) {
@@ -151,7 +151,7 @@ async function tts(message) {
       month: "short",
       day: "numeric",
     });
-    finalText = `Today's date is ${date}`;
+    finalText = `Today's date is ${date}.`;
     speech.text = finalText;
   }
   //google search
@@ -161,10 +161,10 @@ async function tts(message) {
     message.includes("who is") ||
     message.includes("who are")
   ) {
-    finalText = `Here's what i found on Google about ${message}`;
+    finalText = `Here's what i found on Google about ${message}.`;
     speech.text = finalText;
     window.open(`https://google.com/search?q=${message}`);
-  } //locating on the map
+  } //where is
   else if (message.includes("where is")) {
     const place = message.replace("where is", " ");
 
@@ -174,7 +174,18 @@ async function tts(message) {
       window.open(`https://www.google.com/maps/place/${place}/`),
       2000
     );
+  } //locating on the map
+  else if (message.includes("location of")) {
+    const place = message.replace("location of", " ");
+
+    finalText = `Opening Google maps. Here's the location of ${place}`;
+    speech.text = finalText;
+    setTimeout(
+      window.open(`https://www.google.com/maps/place/${place}/`),
+      2000
+    );
   }
+
   //weather
   else if (message.includes("weather")) {
     const low = await getLow();
