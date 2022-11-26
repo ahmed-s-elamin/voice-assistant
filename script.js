@@ -178,7 +178,7 @@ async function tts(message) {
   else if (message.includes("location of")) {
     const place = message.replace("location of", " ");
 
-    finalText = `Opening Google maps. Here's the location of ${place}`;
+    finalText = `Opening Google maps. Here's the location of ${place}.`;
     speech.text = finalText;
     setTimeout(
       window.open(`https://www.google.com/maps/place/${place}/`),
@@ -192,7 +192,7 @@ async function tts(message) {
     const hi = await getHi();
     const temp = await getTemp();
     const desc = await getDesc();
-    const response = `Right now it is ${desc}, with temprature of ${temp} degrees. The forecast shows a high of ${hi} and low of ${low} `;
+    const response = `Right now it is ${desc}, with temprature of ${temp} degrees. The forecast shows a high of ${hi} and low of ${low} degrees. `;
     finalText = response;
     speech.text = finalText;
 
@@ -203,14 +203,14 @@ async function tts(message) {
       hour: "numeric",
       minute: "numeric",
     });
-    finalText = `It's currently ${time}`;
+    finalText = `It's currently ${time} in Omdurman.`;
     speech.text = finalText;
   } //adding item to list
   else if (message.includes("add")) {
     const thing = message.replace("add", " ");
     const item = thing.replace(".", ""); // created this to remove the annoying "." at the end
     mylist.push(item); //pushing the item into array
-    finalText = `Okay, the item ${item} was added to the list.`;
+    finalText = `Okay, the item ${item} has been added to the list.`;
     speech.text = finalText;
   } //showing list
   else if (
@@ -266,8 +266,10 @@ async function tts(message) {
     message.includes("read the news")
   ) {
     const news = await bbcNews();
+    const url1 = await GetUrl();
 
     finalText = ` In today's Top stories, ${news}, source: BBC news.`;
+    window.open(url1);
     speech.text = finalText;
   }
   //openning twitter
@@ -328,6 +330,25 @@ async function bbcNews() {
   const article2 = data.articles[2].title;
   const articles = [article1, article2]; //opted for 2 articles only
   return articles.join(", and also, ");
+}
+//fetching article url1
+async function GetUrl() {
+  const response = await fetch(newsApi).catch((err) =>
+    console.error("Cannot fetch: ", err)
+  );
+  const data = await response.json();
+  const url1 = data.articles[0].url;
+  return url1;
+}
+
+//fetching article url2
+async function GetUrl() {
+  const response = await fetch(newsApi).catch((err) =>
+    console.error("Cannot fetch: ", err)
+  );
+  const data = await response.json();
+  const url2 = data.articles[2].url; //accessing article 2 url
+  return url2;
 }
 
 //must run once before the voice actually change
