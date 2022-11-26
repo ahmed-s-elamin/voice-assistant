@@ -1,4 +1,4 @@
-//selsecting the HTML ITEMS
+//selsecting the HTML itemsb
 const btn = document.querySelector(".btn");
 const content1 = document.querySelector(".content1");
 const content2 = document.querySelector(".content2");
@@ -50,6 +50,7 @@ const goodTime = () => {
   }
 };
 
+//Loading message
 window.addEventListener("load", () => {
   setTimeout(() => {
     goodTime();
@@ -82,12 +83,12 @@ recognition.onend = () => {
   console.log("Recognition deactivated");
 };
 
-//adding functionality to the btn
+//button's click event
 btn.addEventListener("click", () => {
   recognition.start();
 });
 
-//Jarvis responses (text to speech)
+//Jarvis responses (text to speech) function
 async function tts(message) {
   const speech = new SpeechSynthesisUtterance();
   //greetings
@@ -168,7 +169,7 @@ async function tts(message) {
   else if (message.includes("where is")) {
     const place = message.replace("where is", " ");
 
-    finalText = `Here's the location of ${place}`;
+    finalText = `Here's the location of ${place}.`;
     speech.text = finalText;
     setTimeout(
       window.open(`https://www.google.com/maps/place/${place}/`),
@@ -192,8 +193,8 @@ async function tts(message) {
     const hi = await getHi();
     const temp = await getTemp();
     const desc = await getDesc();
-    const response = `Right now it is ${desc}, with temprature of ${temp} degrees. The forecast shows a high of ${hi} and low of ${low} degrees. `;
-    finalText = response;
+    const report = `Right now it is ${desc}, with temprature of ${temp} degrees. The forecast shows a high of ${hi} and low of ${low} degrees. `;
+    finalText = report;
     speech.text = finalText;
 
     window.open("https://openweathermap.org/city/365137");
@@ -299,7 +300,7 @@ async function tts(message) {
   speech.voice = voices[1];
   speech.volume = 2;
   speech.rate = 0.9;
-  speech.pitch = 0.2;
+  speech.pitch = 0.2; //not so deep
 
   window.speechSynthesis.speak(speech);
 }
@@ -363,7 +364,7 @@ const feeling = ["i'm feeling great", "Feeling good", "feeling awesome"];
 
 var weatherApi = `https://api.openweathermap.org/data/2.5/weather?q=Omdurman&appid=30a1575e1b07da55883e59393dc1bb94`;
 
-//getting temperature
+//fetching getting temperature
 async function getTemp() {
   const response = await fetch(weatherApi).catch((err) =>
     console.error("cannot fetch: ", err)
@@ -375,7 +376,7 @@ async function getTemp() {
   return finalTemp;
 }
 
-//lowest temp
+//fetching lowest temp
 async function getLow() {
   const response = await fetch(weatherApi).catch((err) =>
     console.error("cannot fetch: ", err)
@@ -387,7 +388,7 @@ async function getLow() {
   return minTemp;
 }
 
-//highest temp
+//fetching highest temp
 async function getHi() {
   const response = await fetch(weatherApi).catch((err) =>
     console.error("cannot fetch: ", err)
@@ -399,7 +400,7 @@ async function getHi() {
   return maxTemp;
 }
 
-// weather description
+//fetching weather description
 async function getDesc() {
   const response = await fetch(weatherApi).catch((err) =>
     console.error("cannot fetch: ", err)
