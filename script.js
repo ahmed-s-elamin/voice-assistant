@@ -90,7 +90,7 @@ btn.addEventListener("click", () => {
 //Jarvis responses (text to speech)
 async function tts(message) {
   const speech = new SpeechSynthesisUtterance();
-  //greeting
+  //greetings
   if (
     message.includes("hey") ||
     message.includes("hi") ||
@@ -102,17 +102,12 @@ async function tts(message) {
       finalText = `Hey, ${myName} how may i help?`;
     }
     speech.text = finalText;
-  } //features
-  else if (message.includes("what can you do")) {
-    finalText =
-      "Check the list in the upper page to see the tokens i use to match with my knowledge. If i couldn't recognize what you said, i'll give you a google search.";
-    speech.text = finalText;
   }
   // telling jarvis your name
   else if (message.includes("my name is")) {
     const name = message.replace("my name is", " ");
     myName.push(name);
-    finalText = `Nice meeting you, ${myName}`;
+    finalText = `Nice meeting you, ${myName}.`;
     speech.text = finalText;
   } else if (
     message.includes("what's my name") ||
@@ -120,9 +115,9 @@ async function tts(message) {
     message.includes("what is my name")
   ) {
     if (myName.length === 0) {
-      finalText = "Sorry bro, you didn't tell me.";
+      finalText = "Sorry, you didn't tell me your name.";
     } else {
-      finalText = `Your name is ${myName} you just told me bro`;
+      finalText = `Your name is ${myName}.`;
     }
     speech.text = finalText;
   } else if (
